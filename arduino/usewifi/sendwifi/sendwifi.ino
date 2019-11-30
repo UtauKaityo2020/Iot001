@@ -2,7 +2,23 @@
 #include <cactus_io_BME280_I2C.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+
 #include "sendwifi.h"
+//Gitからソースを取得した場合、sendwifi.hは含まれません
+//wifiへの接続やWebAPIのURLが記載されている為です
+//GitからCloneした後に、以下の内容でファイルを作成してください
+//
+//-- sendwifi.h -----------------------------------
+//#ifndef sendwifi_h
+//#define sendwifi_h
+//
+//#include "Arduino.h"
+//
+//const char* ssid = "hoge";
+//const char* password = "hoge";
+//const String HOST = "http://hoge.com/";
+//
+//#endif
 
 BME280_I2C bme(0x76);
 
