@@ -1,4 +1,8 @@
 # GETで指定された値を保存する Web API
+
+[ESP32](https://docs.zerynth.com/latest/official/board.zerynth.nodemcu_esp32/docs/index.html)で取得した、湿度や温度をWeb上DBに保存する為に作りました。  
+ゆくゆくは、カメラで撮影した画像に写っている人を判定するAPIにしてゆこうと思っています。一気に完成品を作ろうとすると、開発時に発生した問題の切り分けができなくて挫折しそうなので、簡単な構成のものから作っています。
+
 使用方法
 ---
 例）
@@ -36,9 +40,9 @@ config.json
 }
 ```
 
-当WebAPIを利用するArduinoのソースについて
+当WebAPIを利用するESP32用のソースについて
 ---
-以下のフォルダに設置されています  
+以下のフォルダに設置
 <pre>
 arduino  
 　└ usewifi  
