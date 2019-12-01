@@ -34,7 +34,7 @@ def exception_handler(e):
 #-----------------------------------
 from werkzeug.exceptions import NotFound
 bp = Blueprint('exception', __name__)
-bp.errorhandler(NotFound)
+@bp.errorhandler(NotFound)
 def bp_notfound(e):
     Result = Response("error",-900,"NotFoundException")
     return Result.CreateResponse()
