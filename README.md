@@ -1,7 +1,7 @@
 # GETで指定された値を保存する Web API
 
-[ESP32](https://docs.zerynth.com/latest/official/board.zerynth.nodemcu_esp32/docs/index.html)で取得した、湿度や温度をWeb上DBに保存する為に作りました。  
-ゆくゆくは、カメラで撮影した画像に写っている人を判定するAPIにしてゆこうと思っています。一気に完成品を作ろうとすると、開発時に発生した問題の切り分けができなくて挫折しそうなので、簡単な構成のものから作っています。
+[ESP32](https://docs.zerynth.com/latest/official/board.zerynth.nodemcu_esp32/docs/index.html)で取得した湿度や温度をWeb上DBに保存する為に作りました。  
+ESP32内で、当WebAPIに値をPOST(実際はGET送信)して値をWeb上のDBに送信して保存します。
 
 使用方
 ---
