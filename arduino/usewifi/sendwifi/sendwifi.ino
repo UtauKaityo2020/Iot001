@@ -47,6 +47,21 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
 
+  //LED点灯
+  pinMode(17, OUTPUT);
+  digitalWrite(17, HIGH);
+  delay(500);
+  digitalWrite(17, LOW);
+  delay(500);  
+  digitalWrite(17, HIGH);
+  delay(500);
+  digitalWrite(17, LOW);
+  delay(500);  
+  digitalWrite(17, HIGH);
+  delay(500);
+  digitalWrite(17, LOW);
+  delay(500);  
+
 }
 
 //-------------
@@ -56,7 +71,7 @@ void loop() {
   
   bme.readSensor(); 
   
-  Serial.print("------------------------------");
+  Serial.println("------------------------------");
 
   String Kiatu = String(bme.getPressure_MB());
   String Situdo = String(bme.getHumidity());
