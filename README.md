@@ -46,3 +46,9 @@ arduino
 　　　　　├ README.md
 　　　　　: 
 </pre>
+
+環境
+---
++ Python 3.7.3
++ Flask 1.1.1
++ mysql 8.0.18
