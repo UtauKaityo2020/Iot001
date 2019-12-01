@@ -56,8 +56,6 @@ arduino
 + Python v3.7.3
 + Flask v1.1.1
 + mysql v8.0.18
-+ Bootstrap v4.4.1
-+ jquery.mini v3.4.1
 
 Flaskで使用しているライブラリ
 ---
@@ -68,3 +66,15 @@ Flaskで使用しているライブラリ
 
 (例)   
 ```pip insutall PyMySQL```
+
+その他サイト構成
+---
++ http://example:5000/  
+サイトTOP  
+
++ http://example:5000/view  
+データ表示
+
++ http://example:5000/etc  
+その他（テンプレートとして用意）   
+最小構成でSocketが動くようになっています。
