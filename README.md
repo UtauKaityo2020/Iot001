@@ -6,7 +6,7 @@ ESP32内で、当WebAPIに値をPOST(実際はGET送信)して値をWeb上のDB�
 使用方
 ---
 例）
-http://example:5000/?t=type&v1=値1&v2=値2&v3=値3
+http://example:5000/send?t=type&v1=値1&v2=値2&v3=値3
 
 保存されるテーブルと各値が保存されるフィールド名
 ---

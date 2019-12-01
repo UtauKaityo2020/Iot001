@@ -38,6 +38,12 @@
 
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
+        <li class="nav-item {% block active_dashboard %}{% endblock %}">
+            <a class="nav-link" href="/">
+              <i class="fas fa-fw fa-tachometer-alt"></i>
+              <span>dashboard</span>
+            </a>
+        </li>
         <li class="nav-item {% block active_view %}{% endblock %}">
             <a class="nav-link" href="/view">
               <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -55,21 +61,7 @@
     <div id="content-wrapper">
 
       <div class="container-fluid">
-
-        <!-- DataTables Example -->
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas"></i>
-            {{ title_card }}
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              {% block data %}{% endblock %}
-            </div>
-          </div>
-          <div class="card-footer small text-muted">{% block updatedate %}{% endblock %}</div>
-        </div>
-
+        {% block content%}{% endblock %}
       </div>
       <!-- /.container-fluid -->
 

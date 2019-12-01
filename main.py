@@ -45,10 +45,18 @@ def bp_notfound(e):
     return Result.CreateResponse()
 
 #-----------------------------------
+# サイトIndex
+#-----------------------------------
+@app.route("/")
+def index():
+    return render_template("view_index.html"
+    ,title="Iot")
+
+#-----------------------------------
 # API処理
 #-----------------------------------
-@app.route("/", methods=["GET", "POST"])
-def index():
+@app.route("/send", methods=["GET", "POST"])
+def savedata():
     #try:
         #設定ファイルを読み込む
         app.config.from_json('config.json')
