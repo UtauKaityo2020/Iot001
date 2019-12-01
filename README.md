@@ -35,3 +35,14 @@ config.json
     "DB_CHAR_SET":"utf8"
 }
 ```
+
+当WebAPIを利用するArduinoのソースについて
+---
+以下のフォルダに設置されています  
+<pre>
+arduino  
+　└ usewifi  
+　　　└ sendwifi
+　　　　　├ README.md
+　　　　　: 
+</pre>
