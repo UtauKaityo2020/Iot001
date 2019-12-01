@@ -53,6 +53,18 @@ arduino
 
 環境
 ---
-+ Python 3.7.3
-+ Flask 1.1.1
-+ mysql 8.0.18
++ Python v3.7.3
++ Flask v1.1.1
++ mysql v8.0.18
++ Bootstrap v4.4.1
++ jquery.mini v3.4.1
+
+Flaskで使用しているライブラリ
+---
++ PyMySQL ...DB接続用
++ flask_socketio ...websocket用
+
+※ライブラリをインストールする方法  
+
+(例)   
+```pip insutall PyMySQL```

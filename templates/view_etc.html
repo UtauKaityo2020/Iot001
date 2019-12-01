@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block script %}
+<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+      namespace = '/test';
+      var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
+      var title = document.title;
+      socket.on('my_response', function(msg) {
+          $('#field').append(msg.data);
+      });
+    });
+</script>
+{% endblock %}
+{% block active_etc %}active{% endblock %}
+{% block data %}
+socket:<section id="field"></section>
+{% endblock %}
+{% block updatedate %}
+<span id="update_date"></span>
+{% endblock %}
