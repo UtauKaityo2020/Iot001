@@ -1,14 +1,177 @@
 {% extends "layout.html" %}
 {% block script %}
+<script type="text/javascript" src="/static/vendor/chart.js/Chart.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
-      namespace = '/test';
+
+      //--------------
+      //入力関連制御
+      //--------------
+      jQuery(document).on('keydown', '.input_number_only', function(e){
+
+        let k = "";
+        if (e){
+          k = e.keyCode;
+        }else{
+          k = event.keyCode;
+        }
+        let str = String.fromCharCode(k);
+        if(!(str.match(/[0-9]/) || (37 <= k && k <= 40) || k === 8 || k === 46)){
+          return false;
+        }
+      });
+
+      //--------------
+      //Socket関連
+      //--------------
+      namespace = '/ViewData';
       var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
       var title = document.title;
-      socket.on('my_response', function(msg) {
-          $('#field').append(msg.data);
-      });
+
+      socket.on('ResData', function(data) {
+          var showMsg = "";
+          showMsg = showMsg + "[" + data.time + "] - ";
+          showMsg = showMsg + "気圧：" + data.kiatu + " hpa";
+          showMsg = showMsg + "　";
+          showMsg = showMsg + "気温：" + data.kion + " ℃";
+          showMsg = showMsg + "　";
+          showMsg = showMsg + "湿度：" + data.situdo + " %";
+          $('#field').text(showMsg);
+        }
+      );
+
+      //--------------
+      //日付選択
+      //--------------
+      let jsDateList = {% autoescape false %} {{ DateList }} {% endautoescape %};
+      for (var i = 0; i < jsDateList.length; i++) {
+        let item = jsDateList[i];
+        $("#SelDataList").append($("<option>").val(item.DATE).text(item.DATE));
+      }
+      for (var i = 0; i <= 24 ; i++){
+        $("#SelDataHoureListS").append($("<option " + (i ==  7 ? "selected" : "") + " >").val(i).text(i));
+        $("#SelDataHoureListE").append($("<option " + (i == 18 ? "selected" : "") + " >").val(i).text(i));
+      }
+
+
+      //--------------
+      // チャートの描画
+      //--------------
+      function DrawChart(pData){
+
+        var ChartData;
+        var ctx = document.getElementById('myLineChart').getContext('2d');
+
+        let Options = {
+          scales: {
+            //Y軸のオプション
+            yAxes: [
+              {
+                //湿度
+                id: "y1",
+                position: "left",
+                autoSkip: true,
+                gridLines: {
+                    display: false
+                },
+                ticks: {
+                    fontColor: "black",
+                    beginAtZero: true,
+                    max: 35,
+                    stepSize: 5,
+                    callback: function(val) {
+                        return val + '℃';
+                    }
+                }
+              }
+              ,
+              {
+                //湿度
+                id: "y2",
+                position: "right",
+                autoSkip: true,
+                gridLines: {
+                    display: false
+                },
+                ticks: {
+                    fontColor: "black",
+                    beginAtZero: true,
+                    max: 80,
+                    min: 30,
+                    stepSize: 5,
+                    callback: function(val) {
+                        return val + '%';
+                    }
+                }
+              }
+            ],//yyyyyAxes - end
+            xAxes: [
+              //X軸のオプション
+              {
+                scaleLabel: {
+                    fontColor: "black",
+                    display: true,
+                    labelString: '時刻'
+                },
+                gridLines: {
+                    color: "rgba(126, 126, 126, 0.4)",
+                    zeroLineColor: "black"
+                },
+                ticks: {
+                    fontColor: "black"
+                }
+              }
+            ]//xxxxxAxes - end
+          } //scales: { - end
+        } //Options - end
+
+        ChartData = new Chart(ctx, {
+                                      type: 'bar',
+                                      data: pData,
+                                      options: Options
+                                    }
+        );
+
+      }
+
+      //チャートデータ
+      let Data = {
+        labels : ['07:00','07:15','07:30','07:45','08:00','08:15','08:15','08:15','08:15','08:15','08:15','08:15','08:15','08:15'],
+        datasets: [
+          {
+            //種類
+            type: 'line',  //折れ線グラフ
+            //凡例
+            label: "温度",
+            //枠線の色
+            borderColor: "rgba(255,207,86,1)",
+            //グラフのデータ
+            data: [27, 28, 29, 30, 31, 32],
+            //グラフの区分
+            yAxisID: "y1",
+            //塗りつぶし
+            fill : false
+          },
+          {
+            //種類
+            type: 'line',  //折れ線グラフ
+            //凡例
+            label: "湿度",
+            //背景色
+            backgroundColor: "rgba(75,192,192,0.4)",
+            //枠線の色
+            borderColor: "rgba(75,192,192,1)",
+            //グラフのデータ
+            data: [50, 60, 70, 50, 40, 30],
+            //グラフの区分
+            yAxisID: "y2"
+          }
+        ] //datasets - end
+      }
+
+      DrawChart(Data);
+
     });
 </script>
 {% endblock %}
@@ -22,40 +185,20 @@
     </div>
     <div class="card-body">
       <div class="table-responsive">
-          <section id="field"></section>
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-              <thead>
-                <tr>
-                  <th>時刻</th>
-                  <th>気圧</th>
-                  <th>湿度</th>
-                  <th>温度</th>
-                </tr>
-              </thead>
-              <tfoot>
-                <tr>
-                  <th>時刻</th>
-                  <th>気圧</th>
-                  <th>湿度</th>
-                  <th>温度</th>
-                </tr>
-              </tfoot>
-              <tbody>
-                <tr>
-                  <td>yyyy/mm/dd</td>
-                  <td>9999</td>
-                  <td>9999%</td>
-                  <td>9999℃</td>
-                </tr>
-                <tr>
-                  <td>yyyy/mm/dd</td>
-                  <td>9999</td>
-                  <td>9999%</td>
-                  <td>9999℃</td>
-                </tr>
-              </tbody>
-          </table>
+          
+        <h4 id="field"></h4>
+
+        <div style="margin-left:1em">
+          <div class="radio">
+            <label><input type="radio" name="SelData" id="newData" value="NewData" checked>最新 Top <input class="text-right input_number_only" type="tel" id="TopCnt" size="5" value="100"> 件</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" name="SelData" id="RangeData" value="RangeData">日時範囲 <select id="SelDataList"></select> <select id="SelDataHoureListS"></select>時 〜 <select id="SelDataHoureListE"></select>時</label>
+          </div>
         </div>
+        <p><button id="btnSearch" value="検索">検索</button></p>
+        <canvas id="myLineChart" width="800" height="400"></canvas>
+      </div>
     </div>
     <div class="card-footer small text-muted"><span id="update_date"></span></div>
 </div>

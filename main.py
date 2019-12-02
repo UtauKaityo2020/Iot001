@@ -1,6 +1,8 @@
 from flask import Flask,request,Blueprint,jsonify,render_template
 import pymysql.cursors
 from flask_socketio import SocketIO, emit, disconnect
+import datetime
+import json
 
 app = Flask(__name__)
 
@@ -33,7 +35,6 @@ class Response():
 def exception_handler(e):
     Result = Response("error",-900,"Exception")
     return Result.CreateResponse()
-
 #-----------------------------------
 # その他例外
 #-----------------------------------
@@ -96,14 +97,29 @@ def savedata():
             Result = Response("success",1,"OK")
 
             # Socketへメッセージを送信
-            socketio.emit("my_response", {"data": "OK"}, namespace="/test")
+            strNow = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+            dicRes = {
+                "type":"OK",
+                "kiatu":value1,
+                "kion":value2,
+                "situdo":value3,
+                "time":strNow
+            }
+            socketio.emit("ResData", dicRes, namespace="/ViewData")
 
         else:
             #　結果の作成
             Result = Response("nodata",-1,"NoAdd")
 
             # Socketへメッセージを送信
-            socketio.emit("my_response", {"data": "NG"}, namespace="/test")
+            dicRes = {
+                "type":"NG",
+                "kiatu":"",
+                "kion":"",
+                "situdo":"",
+                "time":strNow
+            }
+            socketio.emit("ResData", dicRes, namespace="/ViewData")
 
         #結果を返す
         return Result.CreateResponse()
@@ -116,9 +132,37 @@ def savedata():
 #-----------------------------------
 @app.route("/view")
 def ViewData():
+
+    DateList = CreateDateList()
+
     return render_template("view_data.html"
     ,title="値表示"
-    ,title_card="センサー値")
+    ,title_card="センサー値"
+    ,DateList=DateList)
+
+#-----------------------------------
+# 日付一覧の作成
+#-----------------------------------
+def CreateDateList():
+
+    #設定ファイルを読み込む
+    app.config.from_json('config.json')
+
+    connection = pymysql.connect(host=app.config["DB_HOST"],
+                                user=app.config["DB_USER"],
+                                password=app.config["DB_PASS"],
+                                db=app.config["DB_NAME"],
+                                charset=app.config["DB_CHAR_SET"],
+                                cursorclass=pymysql.cursors.DictCursor)
+    with connection.cursor() as cursor: 
+        sql = "SELECT DATE_FORMAT(DATA_TIMESTAMP,'%Y/%m/%d') AS DATE  FROM TBL_VALUE GROUP BY DATE_FORMAT(DATA_TIMESTAMP,'%Y/%m/%d') ORDER BY DATE_FORMAT(DATA_TIMESTAMP,'%Y/%m/%d') DESC"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+
+    # MySQLから切断する
+    connection.close()
+
+    return json.dumps(result)
 
 #-----------------------------------
 # その他
