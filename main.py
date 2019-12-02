@@ -101,8 +101,8 @@ def savedata():
             dicRes = {
                 "type":"OK",
                 "kiatu":value1,
-                "kion":value2,
-                "situdo":value3,
+                "situdo":value2,
+                "kion":value3,
                 "time":strNow
             }
             socketio.emit("ResData", dicRes, namespace="/ViewData")
