@@ -168,7 +168,7 @@ def CreateDateList():
     return json.dumps(result)
 
 #-----------------------------------
-# 値の表示処理
+# 表示データ取得　指定した件数を取得
 #-----------------------------------
 @app.route("/GetKionTopN", methods=["GET", "POST"])
 def GetKionTopN():
@@ -225,7 +225,7 @@ def GetKionTopN():
     #return sql
 
 #-----------------------------------
-# 値の表示処理
+# 表示データ取得　指定した条件のレコードを取得
 #-----------------------------------
 @app.route("/GetKionWhere", methods=["GET", "POST"])
 def GetKionWhere():
@@ -241,6 +241,10 @@ def GetKionWhere():
         stH = request.form.get('StH',default=7, type=int)
         edH = request.form.get('WdH',default=18, type=int)
 
+    #日付以外が指定されていた場合は、現在日時を設定する
+    if(IsDate(getDate) == False):
+        getDate = strNow
+    
     #設定ファイルを読み込む
     app.config.from_json('config.json')
 
@@ -293,11 +297,7 @@ def GetKionWhere():
                 DATE_YYMMDD_HHII 
             LIMIT 100 
         """
-
         sql = buf.format(sqlBase,getDate,stH,getDate,edH)
-
-        print(getDate)
-
         cursor.execute(sql)
         result = cursor.fetchall()
 
@@ -336,6 +336,17 @@ def ViewEtc():
 def IsIntFloat(n):
     try:
         float(n)
+    except ValueError:
+        return False
+    else:
+        return True
+
+#-----------------------------------
+# 日付かどうか
+#-----------------------------------
+def IsDate(n):
+    try:
+        datetime.datetime.strptime(n, '%Y/%m/%d')
     except ValueError:
         return False
     else:
