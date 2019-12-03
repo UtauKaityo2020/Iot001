@@ -35,6 +35,7 @@ class Response():
 def exception_handler(e):
     Result = Response("error",-900,"Exception")
     return Result.CreateResponse()
+
 #-----------------------------------
 # その他例外
 #-----------------------------------
@@ -165,13 +166,94 @@ def CreateDateList():
     return json.dumps(result)
 
 #-----------------------------------
+# 値の表示処理
+#-----------------------------------
+@app.route("/GetKionTopN", methods=["GET", "POST"])
+def GetKionTopN():
+
+    if request.method == "GET":
+        Cnt = request.args.get('cnt',default=100, type=int)
+    else:
+        Cnt = request.form.get('cnt',default=100, type=int)
+
+
+    #設定ファイルを読み込む
+    app.config.from_json('config.json')
+
+    #DB接続
+    connection = pymysql.connect(host=app.config["DB_HOST"],
+                                user=app.config["DB_USER"],
+                                password=app.config["DB_PASS"],
+                                db=app.config["DB_NAME"],
+                                charset=app.config["DB_CHAR_SET"],
+                                cursorclass=pymysql.cursors.DictCursor)
+    with connection.cursor() as cursor: 
+        sqlBase = """
+            SELECT 
+                DATE_YYMMDD_HHII ,
+                FORMAT(AVG(DATA_VALUE1),0) AS VAL1,
+                FORMAT(AVG(DATA_VALUE2),0) AS VAL2,
+                FORMAT(AVG(DATA_VALUE3),0) AS VAL3
+            FROM
+                (SELECT 
+                    DATE_FORMAT(DATA_TIMESTAMP,'%Y/%m/%d %H:%i') AS DATE_YYMMDD_HHII ,
+                    DATA_VALUE1,DATA_VALUE2,DATA_VALUE3
+                FROM 
+                    TBL_VALUE
+                WHERE
+                    DATA_TYPE = 'BME280'
+                ) AS T
+            WHERE
+                DATA_VALUE1 IS NOT NULL AND
+                DATA_VALUE2 IS NOT NULL AND
+                DATA_VALUE3 IS NOT NULL
+            GROUP BY 
+                T.DATE_YYMMDD_HHII
+        """
+        buf = "SELECT * FROM ({}) AS TBL ORDER BY DATE_YYMMDD_HHII LIMIT {} "
+        sql = buf.format(sqlBase,Cnt)
+
+        cursor.execute(sql)
+        result = cursor.fetchall()
+
+    # MySQLから切断する
+    connection.close()
+
+    return json.dumps(CreateKionJson(result))
+
+#-----------------------------------
+# 気温情報のJsonを作成する
+#-----------------------------------
+def CreateKionJson(pDic):
+    Result = {"labels":[],"kion":[],"situdo":[]}
+    for item in pDic:
+        if IsIntFloat(item["VAL1"]) == True and IsIntFloat(item["VAL2"]) == True:
+            Result["labels"].append(item["DATE_YYMMDD_HHII"])
+            Result["situdo"].append(float(item["VAL1"]))
+            Result["kion"].append(float(item["VAL2"]))
+
+    return Result
+
+#-----------------------------------
 # その他
 #-----------------------------------
 @app.route("/etc")
 def ViewEtc():
-    return render_template("view_etc.html"
-    ,title="その他"
-    ,title_card="その他")
+    return render_template(
+        "view_etc.html"
+        ,title="その他"
+        ,title_card="その他")
+
+#-----------------------------------
+# 数字かどうか
+#-----------------------------------
+def IsIntFloat(n):
+    try:
+        float(n)
+    except ValueError:
+        return False
+    else:
+        return True
 
 #-----------------------------------
 #スタートアップ処理
@@ -182,5 +264,3 @@ if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', debug=True)
 
     #app.run(debug=True,host='0.0.0.0')
-
-
