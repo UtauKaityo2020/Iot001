@@ -220,6 +220,7 @@ def GetKionTopN():
     connection.close()
 
     return json.dumps(CreateKionJson(result))
+    #return sql
 
 #-----------------------------------
 # 気温情報のJsonを作成する
@@ -231,6 +232,7 @@ def CreateKionJson(pDic):
             Result["labels"].append(item["DATE_YYMMDD_HHII"])
             Result["situdo"].append(float(item["VAL1"]))
             Result["kion"].append(float(item["VAL2"]))
+            print("aaaaaaaadddddddd")
 
     return Result
 
