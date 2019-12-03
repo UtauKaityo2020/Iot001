@@ -60,7 +60,7 @@ def index():
 @app.route("/send", methods=["GET", "POST"])
 def savedata():
     #try:
-    
+
         strNow = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
 
         #設定ファイルを読み込む
@@ -233,13 +233,13 @@ def GetKionWhere():
     strNow = datetime.datetime.now().strftime('%Y/%m/%d')
 
     if request.method == "GET":
-        getDate = request.args.get('getDate',default=strNow, type=str)
-        stH = request.args.get('stH',default=7, type=int)
-        edH = request.args.get('edH',default=18, type=int)
+        getDate = request.args.get('Date',default=strNow, type=str)
+        stH = request.args.get('StH',default=7, type=int)
+        edH = request.args.get('EdH',default=18, type=int)
     else:
-        getDate = request.form.get('getDate',default=strNow, type=str)
-        stH = request.form.get('stH',default=7, type=int)
-        edH = request.form.get('edH',default=18, type=int)
+        getDate = request.form.get('Date',default=strNow, type=str)
+        stH = request.form.get('StH',default=7, type=int)
+        edH = request.form.get('WdH',default=18, type=int)
 
     #設定ファイルを読み込む
     app.config.from_json('config.json')
