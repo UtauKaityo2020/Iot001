@@ -228,6 +228,10 @@ def GetKionTopN():
 def CreateKionJson(pDic):
     Result = {"labels":[],"kion":[],"situdo":[]}
     for item in pDic:
+
+        print(IsIntFloat(item["VAL1"]))
+        print(IsIntFloat(item["VAL2"]))
+
         if IsIntFloat(item["VAL1"]) == True and IsIntFloat(item["VAL2"]) == True:
             Result["labels"].append(item["DATE_YYMMDD_HHII"])
             Result["situdo"].append(float(item["VAL1"]))
