@@ -60,6 +60,9 @@ def index():
 @app.route("/send", methods=["GET", "POST"])
 def savedata():
     #try:
+    
+        strNow = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+
         #設定ファイルを読み込む
         app.config.from_json('config.json')
 
@@ -98,7 +101,6 @@ def savedata():
             Result = Response("success",1,"OK")
 
             # Socketへメッセージを送信
-            strNow = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
             dicRes = {
                 "type":"OK",
                 "kiatu":value1,
@@ -302,8 +304,8 @@ def GetKionWhere():
     # MySQLから切断する
     connection.close()
 
-    #return json.dumps(CreateKionJson(result))
-    return sql
+    return json.dumps(CreateKionJson(result))
+    #return sql
 
 #-----------------------------------
 # 気温情報のJsonを作成する
