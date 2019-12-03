@@ -31,10 +31,10 @@ class Response():
 #-----------------------------------
 # 例外処理
 #-----------------------------------
-@app.errorhandler(Exception)
-def exception_handler(e):
-    Result = Response("error",-900,"Exception")
-    return Result.CreateResponse()
+#@app.errorhandler(Exception)
+#def exception_handler(e):
+#    Result = Response("error",-900,"Exception")
+#    return Result.CreateResponse()
 
 #-----------------------------------
 # その他例外
@@ -221,6 +221,89 @@ def GetKionTopN():
 
     return json.dumps(CreateKionJson(result))
     #return sql
+
+#-----------------------------------
+# 値の表示処理
+#-----------------------------------
+@app.route("/GetKionWhere", methods=["GET", "POST"])
+def GetKionWhere():
+
+    strNow = datetime.datetime.now().strftime('%Y/%m/%d')
+
+    if request.method == "GET":
+        getDate = request.args.get('getDate',default=strNow, type=str)
+        stH = request.args.get('stH',default=7, type=int)
+        edH = request.args.get('edH',default=18, type=int)
+    else:
+        getDate = request.form.get('getDate',default=strNow, type=str)
+        stH = request.form.get('stH',default=7, type=int)
+        edH = request.form.get('edH',default=18, type=int)
+
+    #設定ファイルを読み込む
+    app.config.from_json('config.json')
+
+    #DB接続
+    connection = pymysql.connect(host=app.config["DB_HOST"],
+                                user=app.config["DB_USER"],
+                                password=app.config["DB_PASS"],
+                                db=app.config["DB_NAME"],
+                                charset=app.config["DB_CHAR_SET"],
+                                cursorclass=pymysql.cursors.DictCursor)
+    with connection.cursor() as cursor: 
+        sqlBase = """
+            SELECT 
+                MAX(DATE_YYMMDD_HHII) AS DATE_YYMMDD_HHII ,
+                MAX(DATE_YYYY_MM_DD) AS DATE_YYYY_MM_DD,
+                MAX(DATE_HH) AS DATE_HH ,
+                MAX(DATE_MM) AS DATE_MM ,
+                FORMAT(AVG(DATA_VALUE1),0) AS VAL1,
+                FORMAT(AVG(DATA_VALUE2),0) AS VAL2,
+                FORMAT(AVG(DATA_VALUE3),0) AS VAL3
+            FROM
+                (SELECT 
+                    DATE_FORMAT(DATA_TIMESTAMP,'%Y/%m/%d %H:%i') AS DATE_YYMMDD_HHII ,
+                    DATE_FORMAT(DATA_TIMESTAMP,'%Y/%m/%d') AS DATE_YYYY_MM_DD ,
+                    DATE_FORMAT(DATA_TIMESTAMP,'%H') AS DATE_HH ,
+                    DATE_FORMAT(DATA_TIMESTAMP,'%i') AS DATE_MM ,
+                    DATA_VALUE1,DATA_VALUE2,DATA_VALUE3
+                FROM 
+                    TBL_VALUE
+                WHERE
+                    DATA_TYPE = 'BME280'
+                ) AS T
+            WHERE
+                DATA_VALUE1 IS NOT NULL AND
+                DATA_VALUE2 IS NOT NULL AND
+                DATA_VALUE3 IS NOT NULL
+            GROUP BY 
+                T.DATE_YYMMDD_HHII
+        """
+        buf = """
+            SELECT 
+                * 
+            FROM 
+                ({}) AS TBL 
+            WHERE
+                (DATE_YYYY_MM_DD = '{}' AND {} <= DATE_HH)
+                AND
+                (DATE_YYYY_MM_DD = '{}' AND DATE_HH <= {})
+            ORDER BY 
+                DATE_YYMMDD_HHII 
+            LIMIT 100 
+        """
+
+        sql = buf.format(sqlBase,getDate,stH,getDate,edH)
+
+        print(getDate)
+
+        cursor.execute(sql)
+        result = cursor.fetchall()
+
+    # MySQLから切断する
+    connection.close()
+
+    #return json.dumps(CreateKionJson(result))
+    return sql
 
 #-----------------------------------
 # 気温情報のJsonを作成する
