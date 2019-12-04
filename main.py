@@ -212,7 +212,7 @@ def GetKionTopN():
             GROUP BY 
                 T.DATE_YYMMDD_HHII
         """
-        buf = "SELECT * FROM ({}) AS TBL ORDER BY DATE_YYMMDD_HHII LIMIT {} "
+        buf = "SELECT * FROM ({}) AS TBL ORDER BY DATE_YYMMDD_HHII DESC LIMIT {} "
         sql = buf.format(sqlBase,Cnt)
 
         cursor.execute(sql)
