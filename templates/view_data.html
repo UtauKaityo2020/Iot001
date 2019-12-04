@@ -9,7 +9,6 @@
       //入力関連制御
       //--------------
       jQuery(document).on('keydown', '.input_number_only', function(e){
-
         let k = "";
         if (e){
           k = e.keyCode;
@@ -54,123 +53,209 @@
         $("#SelDataHoureListE").append($("<option " + (i == 18 ? "selected" : "") + " >").val(i).text(i));
       }
 
-
       //--------------
-      // チャートの描画
+      // チャート管理クラス
       //--------------
-      function DrawChart(pData){
+      class clsChart {
+        //----------------
+        // コンストラクタ
+        //----------------
+        constructor(){
+          //キャンバスID
+          this.CanvasId = "myLineChart";
+          //検索ボタンID
+          this.SearchBtnId = "BtnSearch";
 
-        var ChartData;
-        var ctx = document.getElementById('myLineChart').getContext('2d');
-
-        let Options = {
-          scales: {
-            //Y軸のオプション
-            yAxes: [
+          //チャートデータ
+          this.ChartData = {
+            labels : ["2019/11/30 22:16", "2019/11/30 22:17", "2019/11/30 22:18", "2019/11/30 22:22", "2019/11/30 22:23", "2019/11/30 22:24", "2019/11/30 22:25", "2019/11/30 22:26", "2019/11/30 22:27", "2019/11/30 22:28", "2019/11/30 22:29", "2019/11/30 22:30", "2019/11/30 22:31", "2019/11/30 22:32", "2019/11/30 22:33", "2019/11/30 22:34", "2019/11/30 22:35", "2019/11/30 22:36", "2019/11/30 22:37", "2019/11/30 22:38", "2019/11/30 22:39", "2019/11/30 22:40", "2019/11/30 22:41", "2019/11/30 22:42", "2019/11/30 22:43", "2019/11/30 22:44", "2019/11/30 22:45", "2019/11/30 22:46", "2019/11/30 22:47", "2019/11/30 22:48", "2019/11/30 22:49", "2019/11/30 22:50", "2019/11/30 22:51", "2019/11/30 22:52", "2019/11/30 22:53", "2019/11/30 22:54", "2019/11/30 22:55", "2019/11/30 22:56", "2019/11/30 22:57", "2019/11/30 22:58", "2019/11/30 22:59", "2019/11/30 23:00", "2019/11/30 23:01", "2019/11/30 23:02", "2019/11/30 23:03", "2019/11/30 23:04", "2019/11/30 23:05", "2019/11/30 23:06", "2019/12/01 23:38", "2019/12/01 23:39", "2019/12/01 23:40", "2019/12/01 23:41", "2019/12/01 23:42", "2019/12/02 23:54", "2019/12/02 23:55", "2019/12/02 23:56", "2019/12/02 23:57", "2019/12/02 23:58", "2019/12/02 23:59", "2019/12/03 00:00", "2019/12/03 00:01", "2019/12/03 00:02", "2019/12/03 00:03", "2019/12/03 00:04", "2019/12/03 00:05", "2019/12/03 00:06"],
+            datasets: [
               {
-                //湿度
-                id: "y1",
-                position: "left",
-                autoSkip: true,
-                gridLines: {
-                    display: false
-                },
-                ticks: {
-                    fontColor: "black",
-                    beginAtZero: true,
-                    max: 35,
-                    stepSize: 5,
-                    callback: function(val) {
-                        return val + '℃';
-                    }
-                }
-              }
-              ,
+                //種類
+                type: 'line',  //折れ線グラフ
+                //凡例
+                label: "温度",
+                //枠線の色
+                borderColor: "rgba(255,207,86,1)",
+                //グラフのデータ
+                data: [20.0, 20.0, 20.0, 19.0, 19.0, 20.0, 21.0, 21.0, 20.0, 18.0, 16.0, 14.0, 13.0, 12.0, 12.0, 11.0, 11.0, 10.0, 10.0, 10.0, 10.0, 10.0, 14.0, 20.0, 23.0, 23.0, 24.0, 25.0, 29.0, 34.0, 30.0, 23.0, 18.0, 15.0, 13.0, 10.0, 9.0, 9.0, 7.0, 7.0, 6.0, 5.0, 4.0, 4.0, 4.0, 3.0, 3.0, 5.0, 23.0, 23.0, 23.0, 23.0, 23.0, 22.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0],
+                //グラフの区分
+                yAxisID: "y1",
+                //塗りつぶし
+                fill : false
+              },
               {
-                //湿度
-                id: "y2",
-                position: "right",
-                autoSkip: true,
-                gridLines: {
-                    display: false
-                },
-                ticks: {
-                    fontColor: "black",
-                    beginAtZero: true,
-                    max: 80,
-                    min: 30,
-                    stepSize: 5,
-                    callback: function(val) {
-                        return val + '%';
-                    }
-                }
+                //種類
+                type: 'line',  //折れ線グラフ
+                //凡例
+                label: "湿度",
+                //背景色
+                backgroundColor: "rgba(75,192,192,0.4)",
+                //枠線の色
+                borderColor: "rgba(75,192,192,1)",
+                //グラフのデータ
+                data: [47.0, 46.0, 46.0, 37.0, 46.0, 46.0, 45.0, 44.0, 34.0, 36.0, 40.0, 43.0, 46.0, 49.0, 51.0, 53.0, 54.0, 56.0, 57.0, 58.0, 58.0, 60.0, 73.0, 51.0, 41.0, 38.0, 37.0, 34.0, 30.0, 23.0, 41.0, 21.0, 26.0, 32.0, 37.0, 42.0, 46.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 65.0, 67.0, 68.0, 69.0, 81.0, 41.0, 42.0, 41.0, 42.0, 41.0, 50.0, 49.0, 49.0, 48.0, 48.0, 48.0, 48.0, 48.0, 47.0, 47.0, 47.0, 47.0, 47.0],
+                //グラフの区分
+                yAxisID: "y2"
               }
-            ],//yyyyyAxes - end
-            xAxes: [
-              //X軸のオプション
-              {
-                scaleLabel: {
-                    fontColor: "black",
-                    display: true,
-                    labelString: '時刻'
-                },
-                gridLines: {
-                    color: "rgba(126, 126, 126, 0.4)",
-                    zeroLineColor: "black"
-                },
-                ticks: {
-                    fontColor: "black"
-                }
-              }
-            ]//xxxxxAxes - end
-          } //scales: { - end
-        } //Options - end
+            ] //datasets - end
+          }// this.CartData = { - end
 
-        ChartData = new Chart(ctx, {
-                                      type: 'bar',
-                                      data: pData,
-                                      options: Options
-                                    }
-        );
+          //-----------------
+          //イベント-ハンドリング
+          //-----------------
+          //検索ボタン
+          $("#" + this.SearchBtnId).on('click',this.onClick_BtnSearch.bind(this));
 
-      }
+        }
 
-      //チャートデータ
-      let Data = {
-        labels : ["2019/11/30 22:16", "2019/11/30 22:17", "2019/11/30 22:18", "2019/11/30 22:22", "2019/11/30 22:23", "2019/11/30 22:24", "2019/11/30 22:25", "2019/11/30 22:26", "2019/11/30 22:27", "2019/11/30 22:28", "2019/11/30 22:29", "2019/11/30 22:30", "2019/11/30 22:31", "2019/11/30 22:32", "2019/11/30 22:33", "2019/11/30 22:34", "2019/11/30 22:35", "2019/11/30 22:36", "2019/11/30 22:37", "2019/11/30 22:38", "2019/11/30 22:39", "2019/11/30 22:40", "2019/11/30 22:41", "2019/11/30 22:42", "2019/11/30 22:43", "2019/11/30 22:44", "2019/11/30 22:45", "2019/11/30 22:46", "2019/11/30 22:47", "2019/11/30 22:48", "2019/11/30 22:49", "2019/11/30 22:50", "2019/11/30 22:51", "2019/11/30 22:52", "2019/11/30 22:53", "2019/11/30 22:54", "2019/11/30 22:55", "2019/11/30 22:56", "2019/11/30 22:57", "2019/11/30 22:58", "2019/11/30 22:59", "2019/11/30 23:00", "2019/11/30 23:01", "2019/11/30 23:02", "2019/11/30 23:03", "2019/11/30 23:04", "2019/11/30 23:05", "2019/11/30 23:06", "2019/12/01 23:38", "2019/12/01 23:39", "2019/12/01 23:40", "2019/12/01 23:41", "2019/12/01 23:42", "2019/12/02 23:54", "2019/12/02 23:55", "2019/12/02 23:56", "2019/12/02 23:57", "2019/12/02 23:58", "2019/12/02 23:59", "2019/12/03 00:00", "2019/12/03 00:01", "2019/12/03 00:02", "2019/12/03 00:03", "2019/12/03 00:04", "2019/12/03 00:05", "2019/12/03 00:06"],
-        datasets: [
-          {
-            //種類
-            type: 'line',  //折れ線グラフ
-            //凡例
-            label: "温度",
-            //枠線の色
-            borderColor: "rgba(255,207,86,1)",
-            //グラフのデータ
-            data: [20.0, 20.0, 20.0, 19.0, 19.0, 20.0, 21.0, 21.0, 20.0, 18.0, 16.0, 14.0, 13.0, 12.0, 12.0, 11.0, 11.0, 10.0, 10.0, 10.0, 10.0, 10.0, 14.0, 20.0, 23.0, 23.0, 24.0, 25.0, 29.0, 34.0, 30.0, 23.0, 18.0, 15.0, 13.0, 10.0, 9.0, 9.0, 7.0, 7.0, 6.0, 5.0, 4.0, 4.0, 4.0, 3.0, 3.0, 5.0, 23.0, 23.0, 23.0, 23.0, 23.0, 22.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0, 23.0],
-            //グラフの区分
-            yAxisID: "y1",
-            //塗りつぶし
-            fill : false
-          },
-          {
-            //種類
-            type: 'line',  //折れ線グラフ
-            //凡例
-            label: "湿度",
-            //背景色
-            backgroundColor: "rgba(75,192,192,0.4)",
-            //枠線の色
-            borderColor: "rgba(75,192,192,1)",
-            //グラフのデータ
-            data: [47.0, 46.0, 46.0, 37.0, 46.0, 46.0, 45.0, 44.0, 34.0, 36.0, 40.0, 43.0, 46.0, 49.0, 51.0, 53.0, 54.0, 56.0, 57.0, 58.0, 58.0, 60.0, 73.0, 51.0, 41.0, 38.0, 37.0, 34.0, 30.0, 23.0, 41.0, 21.0, 26.0, 32.0, 37.0, 42.0, 46.0, 48.0, 51.0, 54.0, 57.0, 60.0, 63.0, 65.0, 67.0, 68.0, 69.0, 81.0, 41.0, 42.0, 41.0, 42.0, 41.0, 50.0, 49.0, 49.0, 48.0, 48.0, 48.0, 48.0, 48.0, 47.0, 47.0, 47.0, 47.0, 47.0],
-            //グラフの区分
-            yAxisID: "y2"
+        //--------------------
+        // 検索ボタンクリック 処理
+        //--------------------
+        onClick_BtnSearch(){
+          let SelCheckValue = $("input[name='SelData']:checked").val();
+          let GetDataURL = "";
+          let PostData = {};
+          switch(SelCheckValue){
+            case "NewData":
+              //最新TOP件数で取得
+
+              //URL
+              GetDataURL = "/GetKionTopN";
+
+              //パラメタ作成
+              let SetCnt = $("#" + this.TopCnt).val();
+              if(isNaN(SetCnt)==true) SetCnt = 100;
+              PostData = {"cnt" : SetCnt};
+
+              break;
+            default:
+              //日付の範囲で取得
+
+              //URL
+              GetDataURL = "/GetKionWhere";
+
+              //パラメタ作成
+              let SetDate = $('#SelDataList option:selected').val();
+              let SetStH = $('#SelDataHoureListS option:selected').val();;
+              let SetEdH = $('#SelDataHoureListE option:selected').val();;
+              PostData = {"Date" : SetDate, "StH" : SetStH, "EdH" : SetEdH};
+              break;
           }
-        ] //datasets - end
-      }
 
-      DrawChart(Data);
+          //値検索
+          $.ajax({
+            type: "POST",
+            url: GetDataURL,
+            data: PostData,
+            dataType:"json"
+          })
+          .done(this.onAjax_GetDataDone.bind(this))
+          .fail(this.onAjax_GetDataFail.bind(this));
+
+        }
+
+        //-------------------------------
+        // データ取得のAjax完了処理 - 成功時
+        //-------------------------------
+        onAjax_GetDataDone(data){
+
+          this.ChartData.labels = data.labels;
+          this.ChartData.datasets[0].data = data.situdo;
+          this.ChartData.datasets[1].data = data.kion;
+
+          this.DrawChart(this.ChartData);
+
+        }
+
+        //-------------------------------
+        // データ取得のAjax完了処理 - 失敗時
+        //-------------------------------
+        onAjax_GetDataFail(){
+          alert("情報の取得に失敗しました");
+        }
+
+        //--------------
+        // チャートの描画
+        //--------------
+        DrawChart(pData){
+
+          var ChartData;
+          var ctx = document.getElementById(this.CanvasId).getContext('2d');
+
+          let Options = {
+            scales: {
+              //Y軸のオプション
+              yAxes: [
+                {
+                  //湿度
+                  id: "y1",
+                  position: "left",
+                  autoSkip: true,
+                  gridLines: {
+                      display: false
+                  },
+                  ticks: {
+                      fontColor: "black",
+                      beginAtZero: true,
+                      max: 35,
+                      stepSize: 5,
+                      callback: function(val) {
+                          return val + '℃';
+                      }
+                  }
+                }
+                ,
+                {
+                  //湿度
+                  id: "y2",
+                  position: "right",
+                  autoSkip: true,
+                  gridLines: {
+                      display: false
+                  },
+                  ticks: {
+                      fontColor: "black",
+                      beginAtZero: true,
+                      max: 80,
+                      min: 30,
+                      stepSize: 5,
+                      callback: function(val) {
+                          return val + '%';
+                      }
+                  }
+                }
+              ],//yyyyyAxes - end
+              xAxes: [
+                //X軸のオプション
+                {
+                  scaleLabel: {
+                      fontColor: "black",
+                      display: true,
+                      labelString: '時刻'
+                  },
+                  gridLines: {
+                      color: "rgba(126, 126, 126, 0.4)",
+                      zeroLineColor: "black"
+                  },
+                  ticks: {
+                      fontColor: "black"
+                  }
+                }
+              ]//xxxxxAxes - end
+            } //scales: { - end
+          } //Options - end
+
+          ChartData = new Chart(ctx, {
+                                        type: 'bar',
+                                        data: pData,
+                                        options: Options
+                                      }
+          );
+        } //DrawChart(pData){ - end
+      } //class clsChart { - end
+
+      let obj = new clsChart();
 
     });
 </script>
@@ -190,13 +275,13 @@
 
         <div style="margin-left:1em">
           <div class="radio">
-            <label><input type="radio" name="SelData" id="newData" value="NewData" checked>最新 Top <input class="text-right input_number_only" type="tel" id="TopCnt" size="5" value="100"> 件</label>
+            <label><input type="radio" name="SelData" id="NewData" value="NewData" checked>最新 Top <input class="text-right input_number_only" type="tel" id="TopCnt" size="5" value="100"> 件</label>
           </div>
           <div class="radio">
             <label><input type="radio" name="SelData" id="RangeData" value="RangeData">日時範囲 <select id="SelDataList"></select> <select id="SelDataHoureListS"></select>時 〜 <select id="SelDataHoureListE"></select>時</label>
           </div>
         </div>
-        <p><button id="btnSearch" value="検索">検索</button></p>
+        <p><button id="BtnSearch" value="検索">検索</button></p>
         <canvas id="myLineChart" width="800" height="400"></canvas>
       </div>
     </div>

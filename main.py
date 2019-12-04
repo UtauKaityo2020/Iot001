@@ -239,7 +239,7 @@ def GetKionWhere():
     else:
         getDate = request.form.get('Date',default=strNow, type=str)
         stH = request.form.get('StH',default=7, type=int)
-        edH = request.form.get('WdH',default=18, type=int)
+        edH = request.form.get('EdH',default=18, type=int)
 
     #日付以外が指定されていた場合は、現在日時を設定する
     if(IsDate(getDate) == False):
