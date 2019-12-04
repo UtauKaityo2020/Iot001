@@ -124,7 +124,7 @@
               GetDataURL = "/GetKionTopN";
 
               //パラメタ作成
-              let SetCnt = $("#" + this.TopCnt).val();
+              let SetCnt = $("#TopCnt").val();
               if($.isNumeric(SetCnt)==false) SetCnt = 100;
               PostData = {"cnt" : SetCnt};
 
