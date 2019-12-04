@@ -125,7 +125,7 @@
 
               //パラメタ作成
               let SetCnt = $("#" + this.TopCnt).val();
-              if(isNaN(SetCnt)==true) SetCnt = 100;
+              if($.isNumeric(SetCnt)==false) SetCnt = 100;
               PostData = {"cnt" : SetCnt};
 
               break;
