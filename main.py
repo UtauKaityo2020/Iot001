@@ -285,17 +285,19 @@ def GetKionWhere():
                 T.DATE_YYMMDD_HHII
         """
         buf = """
-            SELECT 
-                * 
-            FROM 
-                ({}) AS TBL 
-            WHERE
-                (DATE_YYYY_MM_DD = '{}' AND {} <= DATE_HH)
-                AND
-                (DATE_YYYY_MM_DD = '{}' AND DATE_HH <= {})
-            ORDER BY 
-                DATE_YYMMDD_HHII 
-            LIMIT 100 
+            SELECT * FROM (
+                SELECT 
+                    * 
+                FROM 
+                    ({}) AS TBL 
+                WHERE
+                    (DATE_YYYY_MM_DD = '{}' AND {} <= DATE_HH)
+                    AND
+                    (DATE_YYYY_MM_DD = '{}' AND DATE_HH <= {})
+                ORDER BY 
+                    DATE_YYMMDD_HHII DESC
+                LIMIT 100 
+            ) AS TBL ORDER BY DATE_YYMMDD_HHII
         """
         sql = buf.format(sqlBase,getDate,stH,getDate,edH)
         cursor.execute(sql)
