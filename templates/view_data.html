@@ -161,8 +161,8 @@
         onAjax_GetDataDone(data){
 
           this.ChartData.labels = data.labels;
-          this.ChartData.datasets[0].data = data.situdo;
-          this.ChartData.datasets[1].data = data.kion;
+          this.ChartData.datasets[0].data = data.kion;
+          this.ChartData.datasets[1].data = data.situdo;
 
           this.DrawChart(this.ChartData);
 
