@@ -5,21 +5,21 @@
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
 
-      //--------------
-      //入力関連制御
-      //--------------
-      jQuery(document).on('keydown', '.input_number_only', function(e){
-        let k = "";
-        if (e){
-          k = e.keyCode;
-        }else{
-          k = event.keyCode;
-        }
-        let str = String.fromCharCode(k);
-        if(!(str.match(/[0-9]/) || (37 <= k && k <= 40) || k === 8 || k === 46)){
-          return false;
-        }
-      });
+      // //--------------
+      // //入力関連制御
+      // //--------------
+      // jQuery(document).on('keydown', '.input_number_only', function(e){
+      //   let k = "";
+      //   if (e){
+      //     k = e.keyCode;
+      //   }else{
+      //     k = event.keyCode;
+      //   }
+      //   let str = String.fromCharCode(k);
+      //   if(!(str.match(/[0-9]/) || (37 <= k && k <= 40) || k === 8 || k === 46)){
+      //     return false;
+      //   }
+      // });
 
       //--------------
       //Socket関連
@@ -252,6 +252,8 @@
                                         options: Options
                                       }
           );
+          ChartData.update();
+          
         } //DrawChart(pData){ - end
       } //class clsChart { - end
 
